@@ -12,6 +12,7 @@ const PLATFORMS = ["Zomato", "Swiggy", "Blinkit", "Zepto", "Uber", "Ola", "Rapid
 function Dashboard({ user }) {
   const [platform, setPlatform] = useState("Zomato");
   const [workDate, setWorkDate] = useState("");
+  const [earnings, setEarnings] = useState("");
   const [screenshot, setScreenshot] = useState(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -32,9 +33,11 @@ function Dashboard({ user }) {
         platform,
         work_date: workDate,
         has_evidence: !!screenshot,
+        earnings: earnings ? parseFloat(earnings) : 0,
       });
       setMessage(res.data.message);
       setScreenshot(null);
+      setEarnings("");
       checkStatus();
     } catch (e) {
       setError("Could not connect to the server. Is the backend running?");
@@ -77,6 +80,14 @@ function Dashboard({ user }) {
           type="date"
           value={workDate}
           onChange={(e) => setWorkDate(e.target.value)}
+        />
+
+        <label>💰 Earnings for the Day (₹, optional)</label>
+        <input
+          type="number"
+          placeholder="e.g. 850"
+          value={earnings}
+          onChange={(e) => setEarnings(e.target.value)}
         />
 
         <label>📷 Proof Screenshot (optional but recommended)</label>
@@ -128,6 +139,17 @@ function Dashboard({ user }) {
             </div>
           </div>
 
+          <div className="stats-row">
+            <div className="stat-box stat-earning">
+              <span className="stat-number">₹{result.total_earnings.toLocaleString("en-IN")}</span>
+              <span className="stat-label">Total Earnings</span>
+            </div>
+            <div className="stat-box stat-earning-alt">
+              <span className="stat-number">₹{result.average_daily_earning.toLocaleString("en-IN")}</span>
+              <span className="stat-label">Average per Day</span>
+            </div>
+          </div>
+
           <div className="evidence-split">
             <div className="evidence-chip verified">
               ✅ {result.evidence_backed_days} evidence-backed
@@ -159,12 +181,15 @@ function Dashboard({ user }) {
             <small>{result.days_left_multi_platform} days remaining</small>
           </div>
 
-          <h3>Days by Platform</h3>
+          <h3>Days &amp; Earnings by Platform</h3>
           <ul className="platform-list">
             {Object.entries(result.days_per_platform).map(([name, days]) => (
               <li key={name}>
                 <span>{name}</span>
-                <strong>{days} days</strong>
+                <span className="platform-right">
+                  <strong>{days} days</strong>
+                  <small className="earning-small">₹{(result.earnings_per_platform[name] || 0).toLocaleString("en-IN")}</small>
+                </span>
               </li>
             ))}
           </ul>

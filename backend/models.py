@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Date, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, Date, DateTime, Boolean, Float
 from database import Base
 
 
@@ -22,6 +22,7 @@ class WorkLog(Base):
     platform = Column(String)
     work_date = Column(Date)
     has_evidence = Column(Boolean, default=False)
+    earnings = Column(Float, default=0.0)
 
 
 class DeactivationCase(Base):

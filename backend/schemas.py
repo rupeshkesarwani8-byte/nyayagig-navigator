@@ -8,6 +8,7 @@ class WorkLogCreate(BaseModel):
     platform: str
     work_date: date
     has_evidence: bool = False
+    earnings: float = 0.0
 
 
 class DeactivationCreate(BaseModel):

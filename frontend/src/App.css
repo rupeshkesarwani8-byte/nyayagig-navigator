@@ -656,6 +656,36 @@ small {
   cursor: pointer;
 }
 
+/* ===== Earnings Stat Boxes ===== */
+.stat-earning {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+}
+
+.stat-earning .stat-number {
+  color: #92400e;
+}
+
+.stat-earning-alt {
+  background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+}
+
+.stat-earning-alt .stat-number {
+  color: #9d174d;
+}
+
+/* ===== Platform List With Earnings ===== */
+.platform-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.earning-small {
+  color: #059669 !important;
+  font-weight: 700;
+}
+
 /* ===== Mobile Responsive ===== */
 @media (max-width: 640px) {
   .menu-toggle {

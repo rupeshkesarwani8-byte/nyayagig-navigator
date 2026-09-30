@@ -22,15 +22,16 @@ def add_log(data: WorkLogCreate, db: Session = Depends(get_db)):
     if already:
         if data.has_evidence and not already.has_evidence:
             already.has_evidence = True
-            db.commit()
-            return {"message": "Evidence added to this existing day"}
-        return {"message": "This day was already saved"}
+        already.earnings = data.earnings
+        db.commit()
+        return {"message": "This day's record was updated"}
 
     log = WorkLog(
         phone=data.phone,
         platform=data.platform,
         work_date=data.work_date,
         has_evidence=data.has_evidence,
+        earnings=data.earnings,
     )
     db.add(log)
     db.commit()
@@ -42,12 +43,17 @@ def check_eligibility(phone: str, db: Session = Depends(get_db)):
     logs = db.query(WorkLog).filter(WorkLog.phone == phone).all()
 
     days_per_platform = {}
+    earnings_per_platform = {}
     for log in logs:
         days_per_platform[log.platform] = days_per_platform.get(log.platform, 0) + 1
+        earnings_per_platform[log.platform] = earnings_per_platform.get(log.platform, 0) + log.earnings
 
     total_days = len({log.work_date for log in logs})
+    total_earnings = sum(log.earnings for log in logs)
     best_single = max(days_per_platform.values(), default=0)
     evidence_count = len({log.work_date for log in logs if log.has_evidence})
+
+    avg_daily_earning = round(total_earnings / total_days, 2) if total_days > 0 else 0
 
     if best_single >= 90:
         eligible = True
@@ -62,7 +68,10 @@ def check_eligibility(phone: str, db: Session = Depends(get_db)):
     return {
         "phone": phone,
         "days_per_platform": days_per_platform,
+        "earnings_per_platform": earnings_per_platform,
         "total_days": total_days,
+        "total_earnings": total_earnings,
+        "average_daily_earning": avg_daily_earning,
         "evidence_backed_days": evidence_count,
         "self_declared_days": total_days - evidence_count,
         "eligible": eligible,
