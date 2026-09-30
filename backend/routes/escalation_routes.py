@@ -12,9 +12,9 @@ STATE_AUTHORITIES = {
     },
     "karnataka": {
         "label": "Karnataka",
-        "authority": "Karnataka Gig Workers Welfare Board",
+        "authority": "Karnataka Gig Workers Welfare Board (IPGRS Portal)",
         "contact": "080-22253911",
-        "website": "https://labour.karnataka.gov.in",
+        "website": "https://sevasindhugs.karnataka.gov.in",
     },
     "maharashtra": {
         "label": "Maharashtra",
@@ -29,9 +29,9 @@ STATE_AUTHORITIES = {
         "website": "https://labour.delhi.gov.in",
     },
     "other": {
-        "label": "Anya Rajya",
-        "authority": "Apne Rajya ka Labour Commissioner Office",
-        "contact": "Apne rajya ke labour department ki website dekhein",
+        "label": "Other State",
+        "authority": "Your State's Labour Commissioner Office",
+        "contact": "Check your state's labour department website",
         "website": "https://labour.gov.in",
     },
 }
@@ -39,27 +39,28 @@ STATE_AUTHORITIES = {
 # Problem type ke hisaab se extra guidance
 PROBLEM_GUIDANCE = {
     "deactivation": {
-        "label": "Deactivation ka jawab nahi mila",
+        "label": "No response to deactivation appeal",
         "steps": [
-            "Apna generated appeal letter aur uska proof (screenshot/email) saath rakhein",
-            "Sambandhit authority ko likhit shikayat dein, appeal letter ki copy ke saath",
-            "Agar 15 din me jawab na mile, toh Labour Commissioner ke paas jaayein",
+            "Keep your generated appeal letter and its proof (screenshot/email) ready",
+            "File a written complaint with the relevant authority, attaching a copy of your appeal letter",
+            "In Karnataka, file directly on the IPGRS portal — complaints are automatically routed to the Internal Dispute Resolution Committee (IDRC) with a time-bound resolution",
+            "If no response within 15 days, escalate to the Labour Commissioner",
         ],
     },
     "payment": {
-        "label": "Payment nahi mila",
+        "label": "Payment not received",
         "steps": [
-            "Apne saare payment records/screenshots ikattha karein",
-            "Pehle platform ke grievance cell me complaint karein",
-            "Jawab na mile toh Labour Welfare Board me shikayat darj karein",
+            "Collect all your payment records/screenshots",
+            "First file a complaint with the platform's grievance cell",
+            "If unresolved, file a complaint with the Labour Welfare Board",
         ],
     },
     "benefits": {
-        "label": "Social Security Benefit (insurance/pension) nahi mila",
+        "label": "Social security benefit not received",
         "steps": [
-            "Apna eligibility record (Module 1 wala) saath rakhein",
-            "Apne rajya ke Welfare Board me registration/application karein",
-            "Application number save karke rakhein future reference ke liye",
+            "Keep your eligibility record (from the Dashboard) ready",
+            "Register/apply with your state's Welfare Board",
+            "Save your application number for future reference",
         ],
     },
 }
