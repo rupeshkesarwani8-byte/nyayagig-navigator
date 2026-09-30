@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Navbar({ activePage, onNavigate }) {
+function Navbar({ activePage, onNavigate, user, onLogout }) {
   const [open, setOpen] = useState(false);
 
   const go = (page) => {
@@ -20,24 +20,31 @@ function Navbar({ activePage, onNavigate }) {
       </button>
 
       <ul className={`navbar-links ${open ? "show" : ""}`}>
-        <li
-          className={activePage === "dashboard" ? "active" : ""}
-          onClick={() => go("dashboard")}
-        >
-          Dashboard
-        </li>
-        <li
-          className={activePage === "deactivation" ? "active" : ""}
-          onClick={() => go("deactivation")}
-        >
-          Deactivation Helper
-        </li>
-        <li
-          className={activePage === "escalation" ? "active" : ""}
-          onClick={() => go("escalation")}
-        >
-          Escalation Guide
-        </li>
+        {user && (
+          <>
+            <li
+              className={activePage === "dashboard" ? "active" : ""}
+              onClick={() => go("dashboard")}
+            >
+              Dashboard
+            </li>
+            <li
+              className={activePage === "deactivation" ? "active" : ""}
+              onClick={() => go("deactivation")}
+            >
+              Deactivation Helper
+            </li>
+            <li
+              className={activePage === "escalation" ? "active" : ""}
+              onClick={() => go("escalation")}
+            >
+              Escalation Guide
+            </li>
+            <li onClick={onLogout} className="logout-link">
+              Logout ({user.name})
+            </li>
+          </>
+        )}
       </ul>
     </nav>
   );

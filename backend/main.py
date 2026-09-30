@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from database import Base, engine
 import models
-from routes import eligibility_routes, deactivation_routes, escalation_routes
+from routes import eligibility_routes, deactivation_routes, escalation_routes, auth_routes
 
 Base.metadata.create_all(bind=engine)
 
@@ -16,6 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_routes.router)
 app.include_router(eligibility_routes.router)
 app.include_router(deactivation_routes.router)
 app.include_router(escalation_routes.router)

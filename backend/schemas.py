@@ -15,3 +15,14 @@ class DeactivationCreate(BaseModel):
     platform: str
     state: str = "central"
     notice_text: str
+
+
+class SignupCreate(BaseModel):
+    name: str
+    phone: str
+    password: str
+
+
+class LoginCreate(BaseModel):
+    phone: str
+    password: str

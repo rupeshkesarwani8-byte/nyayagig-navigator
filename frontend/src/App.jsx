@@ -1,26 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar";
 import DeactivationHelper from "./components/DeactivationHelper";
 import EscalationGuide from "./components/EscalationGuide";
+import AuthPage from "./components/AuthPage";
 import "./App.css";
 
 const API = "http://127.0.0.1:8000";
 const PLATFORMS = ["Zomato", "Swiggy", "Blinkit", "Zepto", "Uber", "Ola", "Rapido", "Urban Company", "Other"];
 
-function Dashboard() {
-  const [phone, setPhone] = useState("");
+function Dashboard({ user }) {
   const [platform, setPlatform] = useState("Zomato");
   const [workDate, setWorkDate] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
 
+  const phone = user.phone;
+
   const saveDay = async () => {
     setError("");
     setMessage("");
-    if (!phone || !workDate) {
-      setError("Phone number aur date dono bhariye");
+    if (!workDate) {
+      setError("Date bharein");
       return;
     }
     try {
@@ -38,10 +40,6 @@ function Dashboard() {
 
   const checkStatus = async () => {
     setError("");
-    if (!phone) {
-      setError("Pehle phone number bhariye");
-      return;
-    }
     try {
       const res = await axios.get(`${API}/eligibility/${phone}`);
       setResult(res.data);
@@ -49,6 +47,10 @@ function Dashboard() {
       setError("Backend se connect nahi ho paya. Backend chal raha hai na?");
     }
   };
+
+  useEffect(() => {
+    checkStatus();
+  }, []);
 
   const singleDone = result ? 90 - result.days_left_single_platform : 0;
   const multiDone = result ? result.total_days : 0;
@@ -58,14 +60,7 @@ function Dashboard() {
       <section className="card form-card">
         <div className="card-strip strip-purple" />
         <h2>📝 Aaj ka kaam darj karein</h2>
-
-        <label>📱 Phone number</label>
-        <input
-          type="tel"
-          placeholder="9999999999"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
+        <p className="subtitle">Logged in as: {user.name} ({user.phone})</p>
 
         <label>🛵 Platform</label>
         <select value={platform} onChange={(e) => setPlatform(e.target.value)}>
@@ -83,7 +78,7 @@ function Dashboard() {
 
         <div className="buttons">
           <button className="primary" onClick={saveDay}>Din save karein</button>
-          <button className="secondary" onClick={checkStatus}>Meri eligibility dekhein</button>
+          <button className="secondary" onClick={checkStatus}>Refresh karein</button>
         </div>
 
         {message && <p className="success">✅ {message}</p>}
@@ -150,19 +145,49 @@ function Dashboard() {
 
 function App() {
   const [page, setPage] = useState("dashboard");
+  const [user, setUser] = useState(null);
+  const [checkedStorage, setCheckedStorage] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("nyayagig_user");
+    if (saved) {
+      setUser(JSON.parse(saved));
+    }
+    setCheckedStorage(true);
+  }, []);
+
+  const handleLoginSuccess = (userData) => {
+    setUser(userData);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("nyayagig_user");
+    setUser(null);
+    setPage("dashboard");
+  };
+
+  if (!checkedStorage) {
+    return null;
+  }
 
   return (
     <div className="page">
-      <Navbar activePage={page} onNavigate={setPage} />
+      <Navbar activePage={page} onNavigate={setPage} user={user} onLogout={handleLogout} />
 
       <header className="header">
         <h1>NyayaGig Navigator</h1>
         <p>Aapke kaam ke din, aapka haq</p>
       </header>
 
-      {page === "dashboard" && <Dashboard />}
-      {page === "deactivation" && <DeactivationHelper />}
-      {page === "escalation" && <EscalationGuide />}
+      {!user ? (
+        <AuthPage onLoginSuccess={handleLoginSuccess} />
+      ) : (
+        <>
+          {page === "dashboard" && <Dashboard user={user} />}
+          {page === "deactivation" && <DeactivationHelper user={user} />}
+          {page === "escalation" && <EscalationGuide user={user} />}
+        </>
+      )}
     </div>
   );
 }

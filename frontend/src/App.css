@@ -446,6 +446,24 @@ small {
   flex: none;
 }
 
+.switch-mode {
+  text-align: center;
+  margin-top: 16px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.switch-mode span {
+  color: #2563eb;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.switch-mode span:hover {
+  color: #1d4ed8;
+}
+
 /* ===== Mobile Responsive ===== */
 @media (max-width: 640px) {
   .menu-toggle {
