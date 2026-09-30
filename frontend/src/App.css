@@ -2,6 +2,14 @@
   box-sizing: border-box;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+.page {
+  font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+}
+
 .page {
   min-height: 100vh;
   background: linear-gradient(180deg, #f5f3ff 0%, #eef2ff 50%, #f0fdf4 100%);
@@ -109,12 +117,20 @@
 
 /* ===== Body ===== */
 .container {
-  max-width: 580px;
+  max-width: 1100px;
   margin: -22px auto 40px;
   padding: 0 16px;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 22px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+    max-width: 580px;
+  }
 }
 
 .card {
@@ -462,6 +478,182 @@ small {
 
 .switch-mode span:hover {
   color: #1d4ed8;
+}
+
+/* ===== Loading Spinner ===== */
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Fade-in animation for cards ===== */
+.card {
+  animation: fadeSlideUp 0.4s ease;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Skeleton loading placeholder ===== */
+.skeleton {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+
+/* ===== Loading Spinner ===== */
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.card {
+  animation: fadeSlideUp 0.4s ease;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Empty States ===== */
+.empty-card {
+  text-align: center;
+  padding: 40px 24px;
+  color: #94a3b8;
+}
+
+.empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+
+.empty-card h3 {
+  color: #64748b;
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.empty-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+/* ===== Footer ===== */
+.footer {
+  background: linear-gradient(120deg, #0f172a, #1e1b4b);
+  text-align: center;
+  padding: 32px 16px;
+  margin-top: 30px;
+  border-top: 3px solid;
+  border-image: linear-gradient(90deg, #6366f1, #ec4899) 1;
+}
+
+.footer p {
+  margin: 0 0 6px;
+  color: #e0e7ff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.footer-small {
+  font-size: 0.78rem !important;
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+  margin-top: 6px !important;
+}
+
+/* ===== Evidence Split Chips ===== */
+.evidence-split {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0;
+  flex-wrap: wrap;
+}
+
+.evidence-chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.evidence-chip.verified {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.evidence-chip.unverified {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* ===== Checkbox ===== */
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 16px 0;
+  font-size: 0.85rem;
+  color: #475569;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.checkbox-label input {
+  width: auto;
+  margin-top: 3px;
+  cursor: pointer;
 }
 
 /* ===== Mobile Responsive ===== */

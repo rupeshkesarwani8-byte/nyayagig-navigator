@@ -8,13 +8,13 @@ const STATES = [
   { value: "karnataka", label: "Karnataka" },
   { value: "maharashtra", label: "Maharashtra" },
   { value: "delhi", label: "Delhi" },
-  { value: "other", label: "Anya Rajya" },
+  { value: "other", label: "Other State" },
 ];
 
 const PROBLEMS = [
-  { value: "deactivation", label: "Deactivation ka jawab nahi mila" },
-  { value: "payment", label: "Payment nahi mila" },
-  { value: "benefits", label: "Social Security Benefit nahi mila" },
+  { value: "deactivation", label: "No response to deactivation appeal" },
+  { value: "payment", label: "Payment not received" },
+  { value: "benefits", label: "Social security benefit not received" },
 ];
 
 function EscalationGuide() {
@@ -33,7 +33,7 @@ function EscalationGuide() {
       });
       setGuide(res.data);
     } catch (e) {
-      setError("Backend se connect nahi ho paya. Backend chal raha hai na?");
+      setError("Could not connect to the server. Is the backend running?");
     }
     setLoading(false);
   };
@@ -44,17 +44,17 @@ function EscalationGuide() {
         <div className="card-strip strip-purple" />
         <h2>🧭 Escalation Guide</h2>
         <p className="subtitle">
-          Agar platform ne aapki baat nahi suni, toh yahan pata karein kahan jaana hai
+          If the platform hasn't responded, find out where to go next
         </p>
 
-        <label>🏛️ Aapka state</label>
+        <label>🏛️ Your State</label>
         <select value={state} onChange={(e) => setState(e.target.value)}>
           {STATES.map((s) => (
             <option key={s.value} value={s.value}>{s.label}</option>
           ))}
         </select>
 
-        <label>❓ Aapki problem</label>
+        <label>❓ Your Issue</label>
         <select value={problem} onChange={(e) => setProblem(e.target.value)}>
           {PROBLEMS.map((p) => (
             <option key={p.value} value={p.value}>{p.label}</option>
@@ -63,20 +63,29 @@ function EscalationGuide() {
 
         <div className="buttons">
           <button className="primary" onClick={findGuide} disabled={loading}>
-            {loading ? "Dhundh rahe hain..." : "Guide Dikhayein"}
+            {loading && <span className="spinner" />}
+            {loading ? "Finding..." : "Show Guide"}
           </button>
         </div>
 
         {error && <p className="error">⚠️ {error}</p>}
       </section>
 
+      {!guide && (
+        <section className="card empty-card">
+          <div className="empty-icon">🧭</div>
+          <h3>No guide selected yet</h3>
+          <p>Choose your state and issue above, then click "Show Guide".</p>
+        </section>
+      )}
+
       {guide && (
         <section className="card result-card">
           <div className="card-strip strip-green" />
-          <h2>📍 Aapke Liye Guide</h2>
+          <h2>📍 Your Guide</h2>
 
           <div className="law-box">
-            <strong>Kahan Jaana Hai:</strong>
+            <strong>Where to Go:</strong>
             <p>{guide.authority}</p>
           </div>
 
@@ -92,7 +101,7 @@ function EscalationGuide() {
             🔗 {guide.website}
           </a>
 
-          <h3>Karne Ke Steps</h3>
+          <h3>Steps to Follow</h3>
           <ul className="steps-list">
             {guide.steps.map((step, i) => (
               <li key={i}>

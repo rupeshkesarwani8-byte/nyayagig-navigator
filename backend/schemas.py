@@ -7,6 +7,7 @@ class WorkLogCreate(BaseModel):
     phone: str
     platform: str
     work_date: date
+    has_evidence: bool = False
 
 
 class DeactivationCreate(BaseModel):

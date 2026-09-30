@@ -12,6 +12,7 @@ const PLATFORMS = ["Zomato", "Swiggy", "Blinkit", "Zepto", "Uber", "Ola", "Rapid
 function Dashboard({ user }) {
   const [platform, setPlatform] = useState("Zomato");
   const [workDate, setWorkDate] = useState("");
+  const [screenshot, setScreenshot] = useState(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
@@ -22,7 +23,7 @@ function Dashboard({ user }) {
     setError("");
     setMessage("");
     if (!workDate) {
-      setError("Date bharein");
+      setError("Please select a date");
       return;
     }
     try {
@@ -30,11 +31,13 @@ function Dashboard({ user }) {
         phone,
         platform,
         work_date: workDate,
+        has_evidence: !!screenshot,
       });
       setMessage(res.data.message);
+      setScreenshot(null);
       checkStatus();
     } catch (e) {
-      setError("Backend se connect nahi ho paya. Backend chal raha hai na?");
+      setError("Could not connect to the server. Is the backend running?");
     }
   };
 
@@ -44,7 +47,7 @@ function Dashboard({ user }) {
       const res = await axios.get(`${API}/eligibility/${phone}`);
       setResult(res.data);
     } catch (e) {
-      setError("Backend se connect nahi ho paya. Backend chal raha hai na?");
+      setError("Could not connect to the server. Is the backend running?");
     }
   };
 
@@ -59,7 +62,7 @@ function Dashboard({ user }) {
     <main className="container">
       <section className="card form-card">
         <div className="card-strip strip-purple" />
-        <h2>📝 Aaj ka kaam darj karein</h2>
+        <h2>📝 Log Today's Work</h2>
         <p className="subtitle">Logged in as: {user.name} ({user.phone})</p>
 
         <label>🛵 Platform</label>
@@ -69,71 +72,99 @@ function Dashboard({ user }) {
           ))}
         </select>
 
-        <label>📅 Kaam ki date</label>
+        <label>📅 Work Date</label>
         <input
           type="date"
           value={workDate}
           onChange={(e) => setWorkDate(e.target.value)}
         />
 
+        <label>📷 Proof Screenshot (optional but recommended)</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setScreenshot(e.target.files[0] || null)}
+        />
+        {screenshot && <p className="file-hint">📎 {screenshot.name} attached</p>}
+        <p className="file-note">
+          Days with a screenshot are marked as "evidence-backed" — stronger proof for appeals and applications.
+        </p>
+
         <div className="buttons">
-          <button className="primary" onClick={saveDay}>Din save karein</button>
-          <button className="secondary" onClick={checkStatus}>Refresh karein</button>
+          <button className="primary" onClick={saveDay}>Save Day</button>
+          <button className="secondary" onClick={checkStatus}>Refresh</button>
         </div>
 
         {message && <p className="success">✅ {message}</p>}
         {error && <p className="error">⚠️ {error}</p>}
       </section>
 
+      {!result && (
+        <section className="card empty-card">
+          <div className="empty-icon">📊</div>
+          <h3>No data yet</h3>
+          <p>Log your first work day above to see your eligibility progress here.</p>
+        </section>
+      )}
+
       {result && (
         <section className="card result-card">
           <div className="card-strip strip-green" />
-          <h2>📈 Aapki Eligibility</h2>
+          <h2>📈 Your Eligibility</h2>
 
           <div className={result.eligible ? "badge yes" : "badge no"}>
-            {result.eligible ? "✅ Aap eligible hain" : "⏳ Abhi eligible nahi"}
+            {result.eligible ? "✅ You are eligible" : "⏳ Not yet eligible"}
           </div>
           <p className="reason">{result.reason}</p>
 
           <div className="stats-row">
             <div className="stat-box stat-purple">
               <span className="stat-number">{singleDone}</span>
-              <span className="stat-label">Din (single platform)</span>
+              <span className="stat-label">Days (single platform)</span>
             </div>
             <div className="stat-box stat-green">
               <span className="stat-number">{multiDone}</span>
-              <span className="stat-label">Din (sab platforms)</span>
+              <span className="stat-label">Days (all platforms)</span>
+            </div>
+          </div>
+
+          <div className="evidence-split">
+            <div className="evidence-chip verified">
+              ✅ {result.evidence_backed_days} evidence-backed
+            </div>
+            <div className="evidence-chip unverified">
+              📝 {result.self_declared_days} self-declared
             </div>
           </div>
 
           <div className="progress-block">
             <div className="progress-label">
-              <span>Ek platform pe (90 din)</span>
+              <span>Single platform (90 days)</span>
               <span>{singleDone} / 90</span>
             </div>
             <div className="bar">
               <div className="fill" style={{ width: `${Math.min(100, (singleDone / 90) * 100)}%` }} />
             </div>
-            <small>{result.days_left_single_platform} din baaki</small>
+            <small>{result.days_left_single_platform} days remaining</small>
           </div>
 
           <div className="progress-block">
             <div className="progress-label">
-              <span>Sab platforms milake (120 din)</span>
+              <span>All platforms combined (120 days)</span>
               <span>{multiDone} / 120</span>
             </div>
             <div className="bar">
               <div className="fill green" style={{ width: `${Math.min(100, (multiDone / 120) * 100)}%` }} />
             </div>
-            <small>{result.days_left_multi_platform} din baaki</small>
+            <small>{result.days_left_multi_platform} days remaining</small>
           </div>
 
-          <h3>Platform ke hisaab se din</h3>
+          <h3>Days by Platform</h3>
           <ul className="platform-list">
             {Object.entries(result.days_per_platform).map(([name, days]) => (
               <li key={name}>
                 <span>{name}</span>
-                <strong>{days} din</strong>
+                <strong>{days} days</strong>
               </li>
             ))}
           </ul>
@@ -176,7 +207,7 @@ function App() {
 
       <header className="header">
         <h1>NyayaGig Navigator</h1>
-        <p>Aapke kaam ke din, aapka haq</p>
+        <p>Your working days, your rights</p>
       </header>
 
       {!user ? (
@@ -188,6 +219,11 @@ function App() {
           {page === "escalation" && <EscalationGuide user={user} />}
         </>
       )}
+
+      <footer className="footer">
+        <p>⚖️ NyayaGig Navigator — Built for gig workers, by a gig worker's ally</p>
+        <p className="footer-small">Based on the Code on Social Security, 2020 and state gig worker laws</p>
+      </footer>
     </div>
   );
 }

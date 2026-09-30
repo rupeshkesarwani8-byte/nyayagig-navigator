@@ -20,12 +20,21 @@ def add_log(data: WorkLogCreate, db: Session = Depends(get_db)):
         .first()
     )
     if already:
-        return {"message": "Ye din pehle se saved hai"}
+        if data.has_evidence and not already.has_evidence:
+            already.has_evidence = True
+            db.commit()
+            return {"message": "Evidence added to this existing day"}
+        return {"message": "This day was already saved"}
 
-    log = WorkLog(phone=data.phone, platform=data.platform, work_date=data.work_date)
+    log = WorkLog(
+        phone=data.phone,
+        platform=data.platform,
+        work_date=data.work_date,
+        has_evidence=data.has_evidence,
+    )
     db.add(log)
     db.commit()
-    return {"message": "Din save ho gaya"}
+    return {"message": "Day saved successfully"}
 
 
 @router.get("/{phone}")
@@ -38,21 +47,24 @@ def check_eligibility(phone: str, db: Session = Depends(get_db)):
 
     total_days = len({log.work_date for log in logs})
     best_single = max(days_per_platform.values(), default=0)
+    evidence_count = len({log.work_date for log in logs if log.has_evidence})
 
     if best_single >= 90:
         eligible = True
-        reason = "Ek platform pe 90 din ho gaye"
+        reason = "You have completed 90 days on a single platform"
     elif len(days_per_platform) > 1 and total_days >= 120:
         eligible = True
-        reason = "Alag-alag platforms milake 120 din ho gaye"
+        reason = "You have completed 120 days across multiple platforms"
     else:
         eligible = False
-        reason = "Abhi eligibility poori nahi hui"
+        reason = "You have not yet completed the required eligibility period"
 
     return {
         "phone": phone,
         "days_per_platform": days_per_platform,
         "total_days": total_days,
+        "evidence_backed_days": evidence_count,
+        "self_declared_days": total_days - evidence_count,
         "eligible": eligible,
         "reason": reason,
         "days_left_single_platform": max(0, 90 - best_single),

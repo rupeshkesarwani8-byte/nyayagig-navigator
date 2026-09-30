@@ -8,9 +8,9 @@ const STATES = [
   { value: "karnataka", label: "Karnataka" },
 ];
 
-function DeactivationHelper() {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+function DeactivationHelper({ user }) {
+  const [name, setName] = useState(user?.name || "");
+  const [phone, setPhone] = useState(user?.phone || "");
   const [platform, setPlatform] = useState("Zomato");
   const [state, setState] = useState("central");
   const [noticeText, setNoticeText] = useState("");
@@ -24,7 +24,7 @@ function DeactivationHelper() {
     setError("");
     setResult(null);
     if (!phone || !noticeText) {
-      setError("Phone number aur deactivation notice dono bhariye");
+      setError("Please enter phone number and the deactivation notice");
       return;
     }
     setLoading(true);
@@ -38,7 +38,7 @@ function DeactivationHelper() {
       });
       setResult(res.data);
     } catch (e) {
-      setError("Backend se connect nahi ho paya. Backend chal raha hai na?");
+      setError("Could not connect to the server. Is the backend running?");
     }
     setLoading(false);
   };
@@ -70,18 +70,18 @@ function DeactivationHelper() {
         <div className="card-strip strip-purple" />
         <h2>🚫 Deactivation Helper</h2>
         <p className="subtitle">
-          Apna account deactivation notice paste karein, hum reason samjhenge aur appeal letter bana denge
+          Paste your account deactivation notice and we'll identify the reason and generate an appeal letter
         </p>
 
-        <label>🙋 Naam (optional)</label>
+        <label>🙋 Full Name</label>
         <input
           type="text"
-          placeholder="Aapka naam"
+          placeholder="Your name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
 
-        <label>📱 Phone number</label>
+        <label>📱 Phone Number</label>
         <input
           type="tel"
           placeholder="9999999999"
@@ -96,7 +96,7 @@ function DeactivationHelper() {
           ))}
         </select>
 
-        <label>🏛️ Aapka state (kaunsa law lagana hai)</label>
+        <label>🏛️ Your State (determines applicable law)</label>
         <select value={state} onChange={(e) => setState(e.target.value)}>
           {STATES.map((s) => (
             <option key={s.value} value={s.value}>
@@ -105,29 +105,38 @@ function DeactivationHelper() {
           ))}
         </select>
 
-        <label>📄 Deactivation notice (jo message platform ne bheja)</label>
+        <label>📄 Deactivation Notice (the message the platform sent you)</label>
         <textarea
           rows="4"
-          placeholder='Jaise: "Your account has been deactivated due to policy violation"'
+          placeholder='e.g. "Your account has been deactivated due to policy violation"'
           value={noticeText}
           onChange={(e) => setNoticeText(e.target.value)}
         />
 
-        <label>📷 Screenshot attach karein (evidence ke liye, optional)</label>
+        <label>📷 Attach Screenshot (optional, for your records)</label>
         <input type="file" accept="image/*" onChange={handleFileChange} />
-        {screenshot && <p className="file-hint">📎 {screenshot.name} attach ho gaya</p>}
+        {screenshot && <p className="file-hint">📎 {screenshot.name} attached</p>}
         <p className="file-note">
-          Note: abhi photo sirf record ke liye save hoti hai. Photo se text automatically padhna (OCR) aage jodenge — abhi upar wale box me khud type karein.
+          Note: the photo is currently saved for reference only. Automatic text extraction (OCR) from screenshots is coming soon — for now, please type the notice above.
         </p>
 
         <div className="buttons">
           <button className="primary" onClick={analyze} disabled={loading}>
-            {loading ? "Analyze ho raha hai..." : "Notice Analyze Karein"}
+            {loading && <span className="spinner" />}
+            {loading ? "Analyzing..." : "Analyze Notice"}
           </button>
         </div>
 
         {error && <p className="error">⚠️ {error}</p>}
       </section>
+
+      {!result && (
+        <section className="card empty-card">
+          <div className="empty-icon">📄</div>
+          <h3>No analysis yet</h3>
+          <p>Fill in the form above and click "Analyze Notice" to see your results here.</p>
+        </section>
+      )}
 
       {result && (
         <section className="card result-card">
@@ -135,12 +144,12 @@ function DeactivationHelper() {
           <h2>📋 Analysis Result</h2>
 
           <div className="reason-box">
-            <strong>Pehchana Gaya Reason:</strong>
+            <strong>Detected Reason:</strong>
             <p>{result.detected_reason_text}</p>
           </div>
 
           <div className="law-box">
-            <strong>Lagu Kanoon:</strong>
+            <strong>Applicable Law:</strong>
             <p>{result.law_used.law_name} ({result.law_used.section})</p>
             <small>{result.law_used.requirement}</small>
           </div>
@@ -148,7 +157,7 @@ function DeactivationHelper() {
           <div className="stats-row">
             <div className="stat-box stat-purple">
               <span className="stat-number">{result.days_worked_logged}</span>
-              <span className="stat-label">Din (is platform pe, aapke record se)</span>
+              <span className="stat-label">Days worked on this platform (from your records)</span>
             </div>
           </div>
 
@@ -157,10 +166,10 @@ function DeactivationHelper() {
 
           <div className="buttons">
             <button className="secondary" onClick={copyLetter}>
-              {copied ? "✅ Copy ho gaya!" : "📋 Copy Karein"}
+              {copied ? "✅ Copied!" : "📋 Copy"}
             </button>
             <button className="primary" onClick={downloadLetter}>
-              ⬇️ Download Karein
+              ⬇️ Download
             </button>
           </div>
         </section>
