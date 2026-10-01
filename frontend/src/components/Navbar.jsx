@@ -40,6 +40,12 @@ function Navbar({ activePage, onNavigate, user, onLogout }) {
             >
               Escalation Guide
             </li>
+            <li
+              className={activePage === "profile" ? "active" : ""}
+              onClick={() => go("profile")}
+            >
+              Profile
+            </li>
             <li onClick={onLogout} className="logout-link">
               Logout ({user.name})
             </li>

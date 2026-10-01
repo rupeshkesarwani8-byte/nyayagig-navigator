@@ -686,6 +686,87 @@ small {
   font-weight: 700;
 }
 
+/* ===== Profile Meta Info ===== */
+.profile-meta {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.profile-meta p {
+  margin: 6px 0;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.profile-meta strong {
+  color: #312e81;
+}
+
+/* ===== Deactivation History ===== */
+.history-card {
+  grid-column: 1 / -1;
+}
+
+.history-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+}
+
+.history-item {
+  background: #f8fafc;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.history-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.history-item-header:hover {
+  background: #f1f5f9;
+}
+
+.history-platform {
+  color: #312e81;
+}
+
+.history-reason-tag {
+  background: #ede9fe;
+  color: #6d28d9;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+}
+
+.history-item-body {
+  padding: 0 16px 16px;
+}
+
+.history-notice {
+  font-size: 0.88rem;
+  color: #475569;
+  margin-bottom: 10px;
+}
+
+.letter-box.small {
+  max-height: 200px;
+  font-size: 0.8rem;
+}
+
 /* ===== Mobile Responsive ===== */
 @media (max-width: 640px) {
   .menu-toggle {

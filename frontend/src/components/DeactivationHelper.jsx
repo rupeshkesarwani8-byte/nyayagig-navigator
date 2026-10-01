@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const API = "http://127.0.0.1:8000";
@@ -19,6 +19,22 @@ function DeactivationHelper({ user }) {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const [expandedCase, setExpandedCase] = useState(null);
+
+  const loadHistory = async () => {
+    try {
+      const res = await axios.get(`${API}/deactivation/history/${phone}`);
+      setHistory(res.data);
+    } catch (e) {
+      // silently ignore
+    }
+  };
+
+  useEffect(() => {
+    loadHistory();
+  }, []);
 
   const analyze = async () => {
     setError("");
@@ -37,24 +53,25 @@ function DeactivationHelper({ user }) {
         notice_text: noticeText,
       });
       setResult(res.data);
+      loadHistory();
     } catch (e) {
       setError("Could not connect to the server. Is the backend running?");
     }
     setLoading(false);
   };
 
-  const copyLetter = () => {
-    navigator.clipboard.writeText(result.generated_letter);
+  const copyText = (text) => {
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const downloadLetter = () => {
-    const blob = new Blob([result.generated_letter], { type: "text/plain" });
+  const downloadLetter = (text, idSuffix) => {
+    const blob = new Blob([text], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `Appeal_Letter_${phone}.txt`;
+    link.download = `Appeal_Letter_${phone}_${idSuffix}.txt`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -62,6 +79,16 @@ function DeactivationHelper({ user }) {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setScreenshot(file || null);
+  };
+
+  const reasonLabels = {
+    rating_drop: "Rating Drop",
+    cancellation_rate: "Cancellation Rate",
+    fraud_flag: "Fraud Flag",
+    customer_complaint: "Customer Complaint",
+    policy_violation: "Policy Violation",
+    delivery_delay: "Delivery Delay",
+    unknown: "Unclear Reason",
   };
 
   return (
@@ -165,13 +192,59 @@ function DeactivationHelper({ user }) {
           <pre className="letter-box">{result.generated_letter}</pre>
 
           <div className="buttons">
-            <button className="secondary" onClick={copyLetter}>
+            <button className="secondary" onClick={() => copyText(result.generated_letter)}>
               {copied ? "✅ Copied!" : "📋 Copy"}
             </button>
-            <button className="primary" onClick={downloadLetter}>
+            <button className="primary" onClick={() => downloadLetter(result.generated_letter, "latest")}>
               ⬇️ Download
             </button>
           </div>
+        </section>
+      )}
+
+      {history.length > 0 && (
+        <section className="card history-card">
+          <div className="card-strip strip-purple" />
+          <h2
+            className="history-toggle"
+            onClick={() => setShowHistory(!showHistory)}
+          >
+            🗂️ Case History ({history.length}) {showHistory ? "▲" : "▼"}
+          </h2>
+
+          {showHistory && (
+            <ul className="history-list">
+              {history.map((item) => (
+                <li key={item.id} className="history-item">
+                  <div
+                    className="history-item-header"
+                    onClick={() => setExpandedCase(expandedCase === item.id ? null : item.id)}
+                  >
+                    <span className="history-platform">{item.platform}</span>
+                    <span className="history-reason-tag">
+                      {reasonLabels[item.detected_reason] || item.detected_reason}
+                    </span>
+                    <span className="history-expand">{expandedCase === item.id ? "▲" : "▼"}</span>
+                  </div>
+
+                  {expandedCase === item.id && (
+                    <div className="history-item-body">
+                      <p className="history-notice"><strong>Notice:</strong> {item.notice_text}</p>
+                      <pre className="letter-box small">{item.generated_letter}</pre>
+                      <div className="buttons">
+                        <button className="secondary" onClick={() => copyText(item.generated_letter)}>
+                          📋 Copy
+                        </button>
+                        <button className="primary" onClick={() => downloadLetter(item.generated_letter, item.id)}>
+                          ⬇️ Download
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       )}
     </main>

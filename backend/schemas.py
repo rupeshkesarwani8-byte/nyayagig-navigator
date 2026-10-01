@@ -28,3 +28,10 @@ class SignupCreate(BaseModel):
 class LoginCreate(BaseModel):
     phone: str
     password: str
+
+
+class ProfileUpdate(BaseModel):
+    phone: str
+    name: str
+    current_password: str
+    new_password: Optional[str] = None

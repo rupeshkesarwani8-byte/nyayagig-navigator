@@ -106,3 +106,24 @@ def analyze_notice(data: DeactivationCreate, db: Session = Depends(get_db)):
         "days_worked_logged": days_worked,
         "generated_letter": letter,
     }
+
+
+@router.get("/history/{phone}")
+def get_history(phone: str, db: Session = Depends(get_db)):
+    cases = (
+        db.query(DeactivationCase)
+        .filter(DeactivationCase.phone == phone)
+        .order_by(DeactivationCase.id.desc())
+        .all()
+    )
+
+    return [
+        {
+            "id": case.id,
+            "platform": case.platform,
+            "notice_text": case.notice_text,
+            "detected_reason": case.detected_reason,
+            "generated_letter": case.generated_letter,
+        }
+        for case in cases
+    ]

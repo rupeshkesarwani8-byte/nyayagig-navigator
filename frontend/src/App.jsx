@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import DeactivationHelper from "./components/DeactivationHelper";
 import EscalationGuide from "./components/EscalationGuide";
 import AuthPage from "./components/AuthPage";
+import ProfilePage from "./components/ProfilePage";
 import "./App.css";
 
 const API = "http://127.0.0.1:8000";
@@ -258,10 +259,11 @@ function App() {
       {!user ? (
         <AuthPage onLoginSuccess={handleLoginSuccess} />
       ) : (
-        <>
+          <>
           {page === "dashboard" && <Dashboard user={user} />}
           {page === "deactivation" && <DeactivationHelper user={user} />}
           {page === "escalation" && <EscalationGuide user={user} />}
+          {page === "profile" && <ProfilePage user={user} onProfileUpdate={setUser} />}
         </>
       )}
 
