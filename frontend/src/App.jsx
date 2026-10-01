@@ -10,6 +10,37 @@ import "./App.css";
 const API = "http://127.0.0.1:8000";
 const PLATFORMS = ["Zomato", "Swiggy", "Blinkit", "Zepto", "Uber", "Ola", "Rapido", "Urban Company", "Other"];
 
+function SummaryBanner({ result }) {
+  if (!result) return null;
+
+  const singleDone = 90 - result.days_left_single_platform;
+  const multiDone = result.total_days;
+
+  let message = "";
+  let icon = "📊";
+
+  if (result.eligible) {
+    icon = "🎉";
+    message = "Congratulations! You are eligible for social security benefits. Apply now using your work certificate.";
+  } else if (result.days_left_single_platform <= 10 && result.days_left_single_platform > 0) {
+    icon = "🔥";
+    message = `You're almost there! Just ${result.days_left_single_platform} more day(s) on a single platform to become eligible.`;
+  } else if (result.days_left_multi_platform <= 15 && result.days_left_multi_platform > 0) {
+    icon = "⏳";
+    message = `Keep going! ${result.days_left_multi_platform} more day(s) across platforms to reach eligibility.`;
+  } else {
+    icon = "💪";
+    message = `You've logged ${multiDone} working day(s) so far. Keep logging daily to track your progress toward benefits.`;
+  }
+
+  return (
+    <div className={`summary-banner ${result.eligible ? "banner-success" : "banner-progress"}`}>
+      <span className="banner-icon">{icon}</span>
+      <p>{message}</p>
+    </div>
+  );
+}
+
 function Dashboard({ user }) {
   const [platform, setPlatform] = useState("Zomato");
   const [workDate, setWorkDate] = useState("");
@@ -80,6 +111,7 @@ function Dashboard({ user }) {
 
   return (
     <main className="container">
+      <SummaryBanner result={result} />
       <section className="card form-card">
         <div className="card-strip strip-purple" />
         <h2>📝 Log Today's Work</h2>
