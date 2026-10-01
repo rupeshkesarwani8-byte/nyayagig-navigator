@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Navbar({ activePage, onNavigate, user, onLogout }) {
+function Navbar({ activePage, onNavigate, user, onLogout, theme, onToggleTheme }) {
   const [open, setOpen] = useState(false);
 
   const go = (page) => {
@@ -51,6 +51,9 @@ function Navbar({ activePage, onNavigate, user, onLogout }) {
             </li>
           </>
         )}
+        <li onClick={onToggleTheme} className="theme-toggle-link">
+          {theme === "light" ? "🌙 Dark" : "☀️ Light"}
+        </li>
       </ul>
     </nav>
   );

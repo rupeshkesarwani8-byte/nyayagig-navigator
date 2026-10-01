@@ -224,6 +224,13 @@ function App() {
   const [page, setPage] = useState("dashboard");
   const [user, setUser] = useState(null);
   const [checkedStorage, setCheckedStorage] = useState(false);
+  const [theme, setTheme] = useState(() => localStorage.getItem("nyayagig_theme") || "light");
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("nyayagig_theme", newTheme);
+  };
 
   useEffect(() => {
     const saved = localStorage.getItem("nyayagig_user");
@@ -247,9 +254,9 @@ function App() {
     return null;
   }
 
-  return (
-    <div className="page">
-      <Navbar activePage={page} onNavigate={setPage} user={user} onLogout={handleLogout} />
+   return (
+    <div className={`page ${theme === "dark" ? "dark-theme" : ""}`}>
+          <Navbar activePage={page} onNavigate={setPage} user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} />
 
       <header className="header">
         <h1>NyayaGig Navigator</h1>
