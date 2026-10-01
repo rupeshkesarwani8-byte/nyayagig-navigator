@@ -54,6 +54,22 @@ function Dashboard({ user }) {
     }
   };
 
+    const downloadCertificate = async () => {
+    setError("");
+    try {
+      const res = await axios.get(`${API}/eligibility/${phone}/certificate`);
+      const blob = new Blob([res.data.certificate_text], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Work_Certificate_${phone}.txt`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setError("Could not generate certificate.");
+    }
+  };
+
   useEffect(() => {
     checkStatus();
   }, []);
@@ -193,6 +209,10 @@ function Dashboard({ user }) {
               </li>
             ))}
           </ul>
+          
+          <button className="secondary full-width" onClick={downloadCertificate} style={{ marginTop: "20px" }}>
+            📜 Download Work Certificate
+          </button>
         </section>
       )}
     </main>
