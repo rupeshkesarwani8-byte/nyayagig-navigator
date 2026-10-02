@@ -8,7 +8,7 @@ import ProfilePage from "./components/ProfilePage";
 import { translations } from "./translations";
 import "./App.css";
 
-const API = "http://127.0.0.1:8000";
+const API = "https://nyayagig-navigator.onrender.com"
 const PLATFORMS = ["Zomato", "Swiggy", "Blinkit", "Zepto", "Uber", "Ola", "Rapido", "Urban Company", "Other"];
 
 function SummaryBanner({ result, t }) {

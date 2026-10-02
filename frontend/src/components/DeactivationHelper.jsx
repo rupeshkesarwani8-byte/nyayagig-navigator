@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const API = "http://127.0.0.1:8000";
+const API = "https://nyayagig-navigator.onrender.com";
 const PLATFORMS = ["Zomato", "Swiggy", "Blinkit", "Zepto", "Uber", "Ola", "Rapido", "Urban Company", "Other"];
 const STATES = [
   { value: "central", label: "Central Law (Default)" },
