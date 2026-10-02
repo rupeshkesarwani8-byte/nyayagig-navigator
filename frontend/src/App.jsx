@@ -101,6 +101,22 @@ function Dashboard({ user }) {
       setError("Could not generate certificate.");
     }
   };
+  
+    const exportData = async () => {
+    setError("");
+    try {
+      const res = await axios.get(`${API}/eligibility/${phone}/export`);
+      const blob = new Blob([JSON.stringify(res.data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `NyayaGig_Data_${phone}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setError("Could not export data.");
+    }
+  };
 
   useEffect(() => {
     checkStatus();
@@ -245,6 +261,10 @@ function Dashboard({ user }) {
           
           <button className="secondary full-width" onClick={downloadCertificate} style={{ marginTop: "20px" }}>
             📜 Download Work Certificate
+          </button>
+          
+          <button className="secondary full-width" onClick={exportData} style={{ marginTop: "10px" }}>
+            💾 Export Raw Data (JSON)
           </button>
         </section>
       )}

@@ -133,3 +133,24 @@ Generated via NyayaGig Navigator
 """
 
     return {"certificate_text": certificate}
+
+@router.get("/{phone}/export")
+def export_data(phone: str, db: Session = Depends(get_db)):
+    logs = db.query(WorkLog).filter(WorkLog.phone == phone).all()
+
+    work_records = [
+        {
+            "platform": log.platform,
+            "date": log.work_date.isoformat(),
+            "earnings": log.earnings,
+            "has_evidence": log.has_evidence,
+        }
+        for log in logs
+    ]
+
+    return {
+        "phone": phone,
+        "exported_at": datetime.now().isoformat(),
+        "total_records": len(work_records),
+        "work_records": work_records,
+    }
