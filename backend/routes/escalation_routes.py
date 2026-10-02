@@ -28,6 +28,44 @@ STATE_AUTHORITIES = {
         "contact": "011-23890039",
         "website": "https://labour.delhi.gov.in",
     },
+
+        "west_bengal": {
+        "label": "West Bengal",
+        "authority": "West Bengal Labour Department",
+        "contact": "033-22625962",
+        "website": "https://wblc.gov.in",
+    },
+    "tamil_nadu": {
+        "label": "Tamil Nadu",
+        "authority": "Tamil Nadu Labour Welfare Board",
+        "contact": "044-28511323",
+        "website": "https://labour.tn.gov.in",
+    },
+    "telangana": {
+        "label": "Telangana",
+        "authority": "Telangana Labour Department",
+        "contact": "040-23237462",
+        "website": "https://labour.telangana.gov.in",
+    },
+    "gujarat": {
+        "label": "Gujarat",
+        "authority": "Gujarat Labour and Employment Department",
+        "contact": "079-23251163",
+        "website": "https://labour.gujarat.gov.in",
+    },
+    "rajasthan": {
+        "label": "Rajasthan",
+        "authority": "Rajasthan Labour Department",
+        "contact": "0141-2227864",
+        "website": "https://labour.rajasthan.gov.in",
+    },
+    "punjab": {
+        "label": "Punjab",
+        "authority": "Punjab Labour Department",
+        "contact": "0172-2740768",
+        "website": "https://pblabour.gov.in",
+    },
+    
     "other": {
         "label": "Other State",
         "authority": "Your State's Labour Commissioner Office",

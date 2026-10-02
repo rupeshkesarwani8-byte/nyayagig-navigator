@@ -8,6 +8,12 @@ const STATES = [
   { value: "karnataka", label: "Karnataka" },
   { value: "maharashtra", label: "Maharashtra" },
   { value: "delhi", label: "Delhi" },
+  { value: "west_bengal", label: "West Bengal" },
+  { value: "tamil_nadu", label: "Tamil Nadu" },
+  { value: "telangana", label: "Telangana" },
+  { value: "gujarat", label: "Gujarat" },
+  { value: "rajasthan", label: "Rajasthan" },
+  { value: "punjab", label: "Punjab" },
   { value: "other", label: "Other State" },
 ];
 
@@ -88,11 +94,11 @@ function EscalationGuide({ t }) {
           </div>
 
           <div className="stats-row">
-            <div className="stat-box stat-purple">
-              <span className="stat-label" style={{ fontSize: "0.9rem", fontWeight: 700, color: "#4c1d95" }}>
-                📞 {guide.contact}
-              </span>
-            </div>
+                            <div className="stat-box stat-purple">
+                  <span className="contact-text">
+                    📞 {guide.contact}
+                  </span>
+                </div>
           </div>
 
           <a href={guide.website} target="_blank" rel="noreferrer" className="website-link">

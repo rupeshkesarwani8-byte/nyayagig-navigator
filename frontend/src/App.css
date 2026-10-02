@@ -949,6 +949,18 @@ small {
 }
 
 
+/* ===== Contact Text (Escalation Guide phone number) ===== */
+.contact-text {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #4c1d95;
+}
+
+.page.dark-theme .contact-text {
+  color: #c4b5fd;
+}
+
+
 /* ===== Mobile Responsive ===== */
 @media (max-width: 640px) {
   .menu-toggle {
