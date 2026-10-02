@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Navbar({ activePage, onNavigate, user, onLogout, theme, onToggleTheme }) {
+function Navbar({ activePage, onNavigate, user, onLogout, theme, onToggleTheme, lang, onToggleLang, t }) {
   const [open, setOpen] = useState(false);
 
   const go = (page) => {
@@ -26,33 +26,36 @@ function Navbar({ activePage, onNavigate, user, onLogout, theme, onToggleTheme }
               className={activePage === "dashboard" ? "active" : ""}
               onClick={() => go("dashboard")}
             >
-              Dashboard
+              {t.nav.dashboard}
             </li>
             <li
               className={activePage === "deactivation" ? "active" : ""}
               onClick={() => go("deactivation")}
             >
-              Deactivation Helper
+              {t.nav.deactivation}
             </li>
             <li
               className={activePage === "escalation" ? "active" : ""}
               onClick={() => go("escalation")}
             >
-              Escalation Guide
+              {t.nav.escalation}
             </li>
             <li
               className={activePage === "profile" ? "active" : ""}
               onClick={() => go("profile")}
             >
-              Profile
+              {t.nav.profile}
             </li>
             <li onClick={onLogout} className="logout-link">
-              Logout ({user.name})
+              {t.nav.logout} ({user.name})
             </li>
           </>
         )}
+        <li onClick={onToggleLang} className="lang-toggle-link">
+          {lang === "en" ? "🇮🇳 हिंदी" : "🇬🇧 English"}
+        </li>
         <li onClick={onToggleTheme} className="theme-toggle-link">
-          {theme === "light" ? "🌙 Dark" : "☀️ Light"}
+          {theme === "light" ? t.nav.dark : t.nav.light}
         </li>
       </ul>
     </nav>

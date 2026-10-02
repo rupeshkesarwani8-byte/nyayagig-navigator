@@ -5,12 +5,13 @@ import DeactivationHelper from "./components/DeactivationHelper";
 import EscalationGuide from "./components/EscalationGuide";
 import AuthPage from "./components/AuthPage";
 import ProfilePage from "./components/ProfilePage";
+import { translations } from "./translations";
 import "./App.css";
 
 const API = "http://127.0.0.1:8000";
 const PLATFORMS = ["Zomato", "Swiggy", "Blinkit", "Zepto", "Uber", "Ola", "Rapido", "Urban Company", "Other"];
 
-function SummaryBanner({ result }) {
+function SummaryBanner({ result, t }) {
   if (!result) return null;
 
   const singleDone = 90 - result.days_left_single_platform;
@@ -41,7 +42,7 @@ function SummaryBanner({ result }) {
   );
 }
 
-function Dashboard({ user }) {
+function Dashboard({ user, t }) {
   const [platform, setPlatform] = useState("Zomato");
   const [workDate, setWorkDate] = useState("");
   const [earnings, setEarnings] = useState("");
@@ -86,7 +87,7 @@ function Dashboard({ user }) {
     }
   };
 
-    const downloadCertificate = async () => {
+  const downloadCertificate = async () => {
     setError("");
     try {
       const res = await axios.get(`${API}/eligibility/${phone}/certificate`);
@@ -101,8 +102,8 @@ function Dashboard({ user }) {
       setError("Could not generate certificate.");
     }
   };
-  
-    const exportData = async () => {
+
+  const exportData = async () => {
     setError("");
     try {
       const res = await axios.get(`${API}/eligibility/${phone}/export`);
@@ -127,27 +128,28 @@ function Dashboard({ user }) {
 
   return (
     <main className="container">
-      <SummaryBanner result={result} />
+      <SummaryBanner result={result} t={t} />
+
       <section className="card form-card">
         <div className="card-strip strip-purple" />
-        <h2>📝 Log Today's Work</h2>
-        <p className="subtitle">Logged in as: {user.name} ({user.phone})</p>
+        <h2>{t.dashboard.logTitle}</h2>
+        <p className="subtitle">{t.dashboard.loggedInAs}: {user.name} ({user.phone})</p>
 
-        <label>🛵 Platform</label>
+        <label>{t.dashboard.platform}</label>
         <select value={platform} onChange={(e) => setPlatform(e.target.value)}>
           {PLATFORMS.map((p) => (
             <option key={p}>{p}</option>
           ))}
         </select>
 
-        <label>📅 Work Date</label>
+        <label>{t.dashboard.workDate}</label>
         <input
           type="date"
           value={workDate}
           onChange={(e) => setWorkDate(e.target.value)}
         />
 
-        <label>💰 Earnings for the Day (₹, optional)</label>
+        <label>{t.dashboard.earnings}</label>
         <input
           type="number"
           placeholder="e.g. 850"
@@ -155,20 +157,18 @@ function Dashboard({ user }) {
           onChange={(e) => setEarnings(e.target.value)}
         />
 
-        <label>📷 Proof Screenshot (optional but recommended)</label>
+        <label>{t.dashboard.screenshot}</label>
         <input
           type="file"
           accept="image/*"
           onChange={(e) => setScreenshot(e.target.files[0] || null)}
         />
         {screenshot && <p className="file-hint">📎 {screenshot.name} attached</p>}
-        <p className="file-note">
-          Days with a screenshot are marked as "evidence-backed" — stronger proof for appeals and applications.
-        </p>
+        <p className="file-note">{t.dashboard.fileNote}</p>
 
         <div className="buttons">
-          <button className="primary" onClick={saveDay}>Save Day</button>
-          <button className="secondary" onClick={checkStatus}>Refresh</button>
+          <button className="primary" onClick={saveDay}>{t.dashboard.saveDay}</button>
+          <button className="secondary" onClick={checkStatus}>{t.dashboard.refresh}</button>
         </div>
 
         {message && <p className="success">✅ {message}</p>}
@@ -178,75 +178,75 @@ function Dashboard({ user }) {
       {!result && (
         <section className="card empty-card">
           <div className="empty-icon">📊</div>
-          <h3>No data yet</h3>
-          <p>Log your first work day above to see your eligibility progress here.</p>
+          <h3>{t.dashboard.emptyTitle}</h3>
+          <p>{t.dashboard.emptyText}</p>
         </section>
       )}
 
       {result && (
         <section className="card result-card">
           <div className="card-strip strip-green" />
-          <h2>📈 Your Eligibility</h2>
+          <h2>{t.dashboard.eligTitle}</h2>
 
           <div className={result.eligible ? "badge yes" : "badge no"}>
-            {result.eligible ? "✅ You are eligible" : "⏳ Not yet eligible"}
+            {result.eligible ? t.dashboard.eligibleYes : t.dashboard.eligibleNo}
           </div>
           <p className="reason">{result.reason}</p>
 
           <div className="stats-row">
             <div className="stat-box stat-purple">
               <span className="stat-number">{singleDone}</span>
-              <span className="stat-label">Days (single platform)</span>
+              <span className="stat-label">{t.dashboard.statSingle}</span>
             </div>
             <div className="stat-box stat-green">
               <span className="stat-number">{multiDone}</span>
-              <span className="stat-label">Days (all platforms)</span>
+              <span className="stat-label">{t.dashboard.statAll}</span>
             </div>
           </div>
 
           <div className="stats-row">
             <div className="stat-box stat-earning">
               <span className="stat-number">₹{result.total_earnings.toLocaleString("en-IN")}</span>
-              <span className="stat-label">Total Earnings</span>
+              <span className="stat-label">{t.dashboard.totalEarnings}</span>
             </div>
             <div className="stat-box stat-earning-alt">
               <span className="stat-number">₹{result.average_daily_earning.toLocaleString("en-IN")}</span>
-              <span className="stat-label">Average per Day</span>
+              <span className="stat-label">{t.dashboard.avgPerDay}</span>
             </div>
           </div>
 
           <div className="evidence-split">
             <div className="evidence-chip verified">
-              ✅ {result.evidence_backed_days} evidence-backed
+              ✅ {result.evidence_backed_days} {t.dashboard.evidenceBacked}
             </div>
             <div className="evidence-chip unverified">
-              📝 {result.self_declared_days} self-declared
+              📝 {result.self_declared_days} {t.dashboard.selfDeclared}
             </div>
           </div>
 
           <div className="progress-block">
             <div className="progress-label">
-              <span>Single platform (90 days)</span>
+              <span>{t.dashboard.singlePlatform}</span>
               <span>{singleDone} / 90</span>
             </div>
             <div className="bar">
               <div className="fill" style={{ width: `${Math.min(100, (singleDone / 90) * 100)}%` }} />
             </div>
-            <small>{result.days_left_single_platform} days remaining</small>
+            <small>{result.days_left_single_platform} {t.dashboard.daysRemaining}</small>
           </div>
 
           <div className="progress-block">
             <div className="progress-label">
-              <span>All platforms combined (120 days)</span>
+              <span>{t.dashboard.allPlatforms}</span>
               <span>{multiDone} / 120</span>
             </div>
             <div className="bar">
               <div className="fill green" style={{ width: `${Math.min(100, (multiDone / 120) * 100)}%` }} />
             </div>
-            <small>{result.days_left_multi_platform} days remaining</small>
+            <small>{result.days_left_multi_platform} {t.dashboard.daysRemaining}</small>
           </div>
 
-          <h3>Days &amp; Earnings by Platform</h3>
+          <h3>{t.dashboard.daysByPlatform}</h3>
           <ul className="platform-list">
             {Object.entries(result.days_per_platform).map(([name, days]) => (
               <li key={name}>
@@ -258,13 +258,12 @@ function Dashboard({ user }) {
               </li>
             ))}
           </ul>
-          
+
           <button className="secondary full-width" onClick={downloadCertificate} style={{ marginTop: "20px" }}>
-            📜 Download Work Certificate
+            {t.dashboard.downloadCert}
           </button>
-          
           <button className="secondary full-width" onClick={exportData} style={{ marginTop: "10px" }}>
-            💾 Export Raw Data (JSON)
+            {t.dashboard.exportData}
           </button>
         </section>
       )}
@@ -277,11 +276,20 @@ function App() {
   const [user, setUser] = useState(null);
   const [checkedStorage, setCheckedStorage] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem("nyayagig_theme") || "light");
+  const [lang, setLang] = useState(() => localStorage.getItem("nyayagig_lang") || "en");
+
+  const t = translations[lang];
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     localStorage.setItem("nyayagig_theme", newTheme);
+  };
+
+  const toggleLang = () => {
+    const newLang = lang === "en" ? "hi" : "en";
+    setLang(newLang);
+    localStorage.setItem("nyayagig_lang", newLang);
   };
 
   useEffect(() => {
@@ -306,23 +314,33 @@ function App() {
     return null;
   }
 
-   return (
+  return (
     <div className={`page ${theme === "dark" ? "dark-theme" : ""}`}>
-          <Navbar activePage={page} onNavigate={setPage} user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} />
+      <Navbar
+        activePage={page}
+        onNavigate={setPage}
+        user={user}
+        onLogout={handleLogout}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        lang={lang}
+        onToggleLang={toggleLang}
+        t={t}
+      />
 
       <header className="header">
-        <h1>NyayaGig Navigator</h1>
-        <p>Your working days, your rights</p>
+        <h1>{t.header.title}</h1>
+        <p>{t.header.subtitle}</p>
       </header>
 
       {!user ? (
-        <AuthPage onLoginSuccess={handleLoginSuccess} />
+        <AuthPage onLoginSuccess={handleLoginSuccess} t={t} />
       ) : (
-          <>
-          {page === "dashboard" && <Dashboard user={user} />}
-          {page === "deactivation" && <DeactivationHelper user={user} />}
-          {page === "escalation" && <EscalationGuide user={user} />}
-          {page === "profile" && <ProfilePage user={user} onProfileUpdate={setUser} />}
+        <>
+          {page === "dashboard" && <Dashboard user={user} t={t} />}
+          {page === "deactivation" && <DeactivationHelper user={user} t={t} />}
+          {page === "escalation" && <EscalationGuide t={t} />}
+          {page === "profile" && <ProfilePage user={user} onProfileUpdate={setUser} t={t} />}
         </>
       )}
 

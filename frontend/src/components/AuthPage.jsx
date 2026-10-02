@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API = "http://127.0.0.1:8000";
 
-function AuthPage({ onLoginSuccess }) {
+function AuthPage({ onLoginSuccess, t }) {
   const [mode, setMode] = useState("login");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -55,11 +55,11 @@ function AuthPage({ onLoginSuccess }) {
     <main className="container">
       <section className="card form-card">
         <div className="card-strip strip-purple" />
-        <h2>{mode === "login" ? "🔐 Login" : "🙋 Create Account"}</h2>
+        <h2>{mode === "login" ? t.auth.loginTitle : t.auth.signupTitle}</h2>
 
         {mode === "signup" && (
           <>
-            <label>🙋 Full Name</label>
+            <label>{t.auth.fullName}</label>
             <input
               type="text"
               placeholder="Your name"
@@ -69,7 +69,7 @@ function AuthPage({ onLoginSuccess }) {
           </>
         )}
 
-        <label>📱 Phone Number</label>
+        <label>{t.auth.phone}</label>
         <input
           type="tel"
           placeholder="9999999999"
@@ -77,7 +77,7 @@ function AuthPage({ onLoginSuccess }) {
           onChange={(e) => setPhone(e.target.value)}
         />
 
-        <label>🔑 Password</label>
+        <label>{t.auth.password}</label>
         <input
           type="password"
           placeholder="At least 6 characters"
@@ -92,7 +92,7 @@ function AuthPage({ onLoginSuccess }) {
               checked={agreed}
               onChange={(e) => setAgreed(e.target.checked)}
             />
-            <span>I confirm that the work days and information I log will be accurate to the best of my knowledge.</span>
+            <span>{t.auth.confirm}</span>
           </label>
         )}
 
@@ -100,12 +100,12 @@ function AuthPage({ onLoginSuccess }) {
           {mode === "login" ? (
             <button className="primary" onClick={handleLogin} disabled={loading}>
               {loading && <span className="spinner" />}
-              {loading ? "Logging in..." : "Log In"}
+              {loading ? t.auth.loggingIn : t.auth.login}
             </button>
           ) : (
             <button className="primary" onClick={handleSignup} disabled={loading}>
               {loading && <span className="spinner" />}
-              {loading ? "Creating account..." : "Create Account"}
+              {loading ? t.auth.creating : t.auth.signup}
             </button>
           )}
         </div>
@@ -115,13 +115,13 @@ function AuthPage({ onLoginSuccess }) {
         <p className="switch-mode">
           {mode === "login" ? (
             <>
-              Don't have an account?{" "}
-              <span onClick={() => { setMode("signup"); setError(""); }}>Sign up</span>
+              {t.auth.noAccount}{" "}
+              <span onClick={() => { setMode("signup"); setError(""); }}>{t.auth.signUpLink}</span>
             </>
           ) : (
             <>
-              Already have an account?{" "}
-              <span onClick={() => { setMode("login"); setError(""); }}>Log in</span>
+              {t.auth.haveAccount}{" "}
+              <span onClick={() => { setMode("login"); setError(""); }}>{t.auth.logInLink}</span>
             </>
           )}
         </p>

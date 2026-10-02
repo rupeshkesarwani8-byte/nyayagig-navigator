@@ -17,7 +17,7 @@ const PROBLEMS = [
   { value: "benefits", label: "Social security benefit not received" },
 ];
 
-function EscalationGuide() {
+function EscalationGuide({ t }) {
   const [state, setState] = useState("uttar_pradesh");
   const [problem, setProblem] = useState("deactivation");
   const [guide, setGuide] = useState(null);
@@ -42,19 +42,17 @@ function EscalationGuide() {
     <main className="container">
       <section className="card form-card">
         <div className="card-strip strip-purple" />
-        <h2>🧭 Escalation Guide</h2>
-        <p className="subtitle">
-          If the platform hasn't responded, find out where to go next
-        </p>
+        <h2>{t.escalation.title}</h2>
+        <p className="subtitle">{t.escalation.subtitle}</p>
 
-        <label>🏛️ Your State</label>
+        <label>{t.escalation.state}</label>
         <select value={state} onChange={(e) => setState(e.target.value)}>
           {STATES.map((s) => (
             <option key={s.value} value={s.value}>{s.label}</option>
           ))}
         </select>
 
-        <label>❓ Your Issue</label>
+        <label>{t.escalation.issue}</label>
         <select value={problem} onChange={(e) => setProblem(e.target.value)}>
           {PROBLEMS.map((p) => (
             <option key={p.value} value={p.value}>{p.label}</option>
@@ -64,7 +62,7 @@ function EscalationGuide() {
         <div className="buttons">
           <button className="primary" onClick={findGuide} disabled={loading}>
             {loading && <span className="spinner" />}
-            {loading ? "Finding..." : "Show Guide"}
+            {loading ? t.escalation.finding : t.escalation.showGuide}
           </button>
         </div>
 
@@ -74,18 +72,18 @@ function EscalationGuide() {
       {!guide && (
         <section className="card empty-card">
           <div className="empty-icon">🧭</div>
-          <h3>No guide selected yet</h3>
-          <p>Choose your state and issue above, then click "Show Guide".</p>
+          <h3>{t.escalation.emptyTitle}</h3>
+          <p>{t.escalation.emptyText}</p>
         </section>
       )}
 
       {guide && (
         <section className="card result-card">
           <div className="card-strip strip-green" />
-          <h2>📍 Your Guide</h2>
+          <h2>{t.escalation.resultTitle}</h2>
 
           <div className="law-box">
-            <strong>Where to Go:</strong>
+            <strong>{t.escalation.whereToGo}</strong>
             <p>{guide.authority}</p>
           </div>
 
@@ -101,7 +99,7 @@ function EscalationGuide() {
             🔗 {guide.website}
           </a>
 
-          <h3>Steps to Follow</h3>
+          <h3>{t.escalation.steps}</h3>
           <ul className="steps-list">
             {guide.steps.map((step, i) => (
               <li key={i}>

@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API = "http://127.0.0.1:8000";
 
-function ProfilePage({ user, onProfileUpdate }) {
+function ProfilePage({ user, onProfileUpdate, t }) {
   const [profile, setProfile] = useState(null);
   const [name, setName] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -70,24 +70,24 @@ function ProfilePage({ user, onProfileUpdate }) {
     <main className="container">
       <section className="card form-card">
         <div className="card-strip strip-purple" />
-        <h2>👤 My Profile</h2>
+        <h2>{t.profile.title}</h2>
 
         {profile && (
           <div className="profile-meta">
-            <p><strong>Phone:</strong> {profile.phone}</p>
-            <p><strong>Member since:</strong> {formatDate(profile.created_at)}</p>
-            <p><strong>Last login:</strong> {formatDate(profile.last_login)}</p>
+            <p><strong>{t.profile.phone}</strong> {profile.phone}</p>
+            <p><strong>{t.profile.memberSince}</strong> {formatDate(profile.created_at)}</p>
+            <p><strong>{t.profile.lastLogin}</strong> {formatDate(profile.last_login)}</p>
           </div>
         )}
 
-        <label>🙋 Full Name</label>
+        <label>{t.profile.fullName}</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
 
-        <label>🔑 Current Password (required to save changes)</label>
+        <label>{t.profile.currentPassword}</label>
         <input
           type="password"
           placeholder="Enter your current password"
@@ -95,7 +95,7 @@ function ProfilePage({ user, onProfileUpdate }) {
           onChange={(e) => setCurrentPassword(e.target.value)}
         />
 
-        <label>🔒 New Password (leave blank to keep current password)</label>
+        <label>{t.profile.newPassword}</label>
         <input
           type="password"
           placeholder="At least 6 characters"
@@ -106,7 +106,7 @@ function ProfilePage({ user, onProfileUpdate }) {
         <div className="buttons">
           <button className="primary" onClick={saveChanges} disabled={loading}>
             {loading && <span className="spinner" />}
-            {loading ? "Saving..." : "Save Changes"}
+            {loading ? t.profile.saving : t.profile.save}
           </button>
         </div>
 

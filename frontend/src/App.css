@@ -999,7 +999,10 @@ input[type="file"] {
   cursor: pointer;
 }
 
-
+.lang-toggle-link {
+  color: #fbbf24 !important;
+  margin-right: 8px;
+}
 
 
 
