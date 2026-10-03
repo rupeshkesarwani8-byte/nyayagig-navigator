@@ -859,8 +859,10 @@ small {
 
 .page.dark-theme .platform-list li,
 .page.dark-theme .history-item,
-.page.dark-theme .profile-meta {
+.page.dark-theme .profile-meta,
+.page.dark-theme .steps-list li {
   background: #0f172a;
+  color: #e2e8f0;
 }
 
 .page.dark-theme .reason-box {
